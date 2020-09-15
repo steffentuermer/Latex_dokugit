@@ -1,0 +1,257 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+\title{Dokumentation}
+\author{Steffen Tuermer }
+\date{September 2020}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\begin{document}
+
+\maketitle
+
+\section{Themensammlung}
+\subsection{Aufgaben:}
+
+\subsubsection{Auswahl GPS-Modul}
+Kriterien:
+\begin{itemize}
+\item	
+Größe
+\item	
+Auffrisch-Rate
+\item	
+Baudrate
+\item	
+Empfindlichkeit
+\item	
+Leistungsaufnahme
+\item	
+Anzahl Channels (L1, L2, L5)
+\item	
+Art der Antenne und Positioitemnierung im Prototyp
+\item	
+Positionsgenauigkeit
+\item	
+Geschwindigkeitsgenauigkeit
+\item	Schnittstelle Mikrocontroller
+\item	Code Mikrocontroller
+\item	Postprocessing der GPS Daten (Ephemeriedendaten?)
+\end{itemize}
+
+\subsection{Forschungsfragen:}
+
+\begin{itemize}
+
+
+\item	Interaktion mit Schnee:
+\item	Störung durch Bedeckung mit Schnee
+\item	Gewinnung von Schneeeigenschaften durch Analyse des GPS Signals
+\item	Mutlipath Effekte durch Schnee
+\item	Interaktion mit Sensoren:
+\item	IMU (Gyro, Mag, Acc)
+\item	Störung durch Rettungsreflektor (Recco, Pieps)
+\item	Störun durch Gehäuse
+\item	Outlook:
+\item	Sinnhaftigkeit einer GPS – RTK Messung?
+\item	Welche Probleme tretten auf, wie kann man diese lösen?
+
+\end{itemize}
+
+\subsection{Literatur:}
+\begin{itemize}
+\item	
+GPS signal reception under snow cover: a pilot study establishing the potential usefulness of GPS in avalanche search andrescue operations \url{https://pubmed.ncbi.nlm.nih.gov/11990140/}
+\item	
+\url{https://www.researchgate.net/publication/253280455_GPS_Tracking_Performance_under_Avalanche_Deposited_Snow} GPS Tracking Performance under Avalanche Deposited Snow
+\item	
+Snow Water Equivalent of Dry Snow Derived From GNSS Carrier Phases \url{https://ieeexplore.ieee.org/document/8307768}
+\item	
+Retrieval of Snow Water Equivalent, Liquid Water Content, and Snow Height of Dry and Wet Snow by Combining GPS Signal Attenuation and Time Delay \url{https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2018WR024431}
+\end{itemize}
+Vorschläge für Chip:
+\begin{itemize}
+\item	
+\url{https://at.rs-online.com/web/p/gps-chip-und-gps-module/1793714?cm_mmc=AT-PLA-DS3A-_-google-_-CSS_AT_DE_Computertechnik_und_Peripherieger%C3%A4te_Whoop_ME-_-(AT:Whoop!)+GPS+Chip+und+GPS+Module-_-1793714&matchtype=&aud-827186183686:pla-333680702070&gclid=CjwKCAjwydP5BRBREiwA-qrCGnt3E3HH_9qw8EMhWAKEcSGWPeI81MjX6XkguFrurs_4tr8YxfDS0RoCawAQAvD_BwE&gclsrc=aw.ds}
+\item	
+\url{https://www.seeedstudio.com/blog/2019/11/06/arduino-gps-modules-which-one-to-use-guide-and-comparisons/}
+\end{itemize}
+\section{Zeitplan}
+
+\section{GPS Implementation}
+
+\subsection{Komponenten}
+
+\begin{itemize}
+\item Arduino Nano
+\item ADAFRUIT Ultimate GPS Shield
+\item SD-Module
+\begin{itemize}
+\item 32GB Micro SD
+\end{itemize}
+\end{itemize}
+
+\subsection{GPS Grundlagen}
+\subsubsection{NMEA}
+
+Kommunikationsstandard zwischen Navigationssgeräten. Am häufigsten verwendet werden $\#$GPGGA und $\#$GPRMC. \url{http://aprs.gids.nl/nmea/}
+Format GPRMC:\\
+$GPRMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,ddmmyy,x.x,a*hh$\\
+1    = UTC of position fix\\
+2    = Data status (V=navigation receiver warning)\\
+3    = Latitude of fix\\
+4    = N or S\\
+5    = Longitude of fix\\
+6    = E or W\\
+7    = Speed over ground in knots\\
+8    = Track made good in degrees True\\
+9    = UT date\\
+10   = Magnetic variation degrees (Easterly var. subtracts from true course)\\
+11   = E or W\\
+12   = Checksum
+
+
+
+$GPGGA,hhmmss.ss,llll.ll,a,yyyyy.yy,a,x,xx,x.x,x.x,M,x.x,M,x.x,xxxx*hh$
+1    = UTC of Position
+2    = Latitude
+3    = N or S
+4    = Longitude
+5    = E or W
+6    = GPS quality indicator (0=invalid; 1=GPS fix; 2=Diff. GPS fix)
+7    = Number of satellites in use [not those in view]
+8    = Horizontal dilution of position
+9    = Antenna altitude above/below mean sea level (geoid)
+10   = Meters  (Antenna height unit)
+11   = Geoidal separation (Diff. between WGS-84 earth ellipsoid and
+       mean sea level.  -=geoid is below WGS-84 ellipsoid)
+12   = Meters  (Units of geoidal separation)
+13   = Age in seconds since last update from diff. reference station
+14   = Diff. reference station ID
+15   = Checksum
+
+
+\subsection{GPS-Modul Vergleich}
+
+\section{Meetings}
+\subsection{200908 Strombedarf Nano+UltimateGPS+SD}
+Zur Messung des Strombedarf wurde das System mit einem Labornetzteil versorgt. Für den Arduino wird im Datenblatt eine Versorgungsspannung von 7-12$V$ empfohlen. Es wird der Strombedarf bei 4.5$V$ bis 10$V$ gemessen.\\
+\subsubsection{Erwartete Werte}
+Folgende Werte sind im Datenblatt der verwendeten Komponenten angeführt:
+\begin{itemize}
+\item
+Ardino Nano: 25$mA$ im Normalbetrieb
+\item
+SD-Breakout: max 100mA pro Schreibvorgang
+\item
+Ultimate GPS: 20mA
+\end{itemize}
+
+\subsubsection{Gemessene Werte}
+Folgende Variationen werden gemessen:
+\begin{itemize}
+\item{nur GPS}
+\item{GPS+Log}
+\item{GPS Frequency=1$Hz$/10$Hz$}
+\item{fix/nofix}
+\end{itemize}
+
+\href{D:/Dropbox/Masterarbeit AvaRange GPS/Dokumentation/Strommessung.txt}{Messwerte}
+\subsubsection{Ergebnis}
+
+Es hat sich gezeigt, dass sowohl GPS Modul, als auch SD-Modul bei einer Versorgung bis 4.6V noch funktionieren. Allerdings ist der Stromverbrauch unter 5.5$V$ nicht konstant. Um sicherzustellen, dass der Arduino richtig arbeitete sollte er mit mindestens 5.5$V$ betrieben werden.\\
+Die gemessenen Werte bei einer GPS-Frequenz von 1$Hz$ entsprechen etwa den erwarteten Werten. Wird die Frequenz auf 10$Hz$ erhöht steigt der Stromverbrauch von durchschnittlich 45$mA$ auf 55$mA$. Dies Werte wurden ohne eine Satellitenverbindung ermittelt. Ist eine Verbindung aufgebaut steigt der Verbrauch um weitere 3$mA$.\\
+Der Stromverbrauch des SD-Modul ist bei diesen relativ niedrigen Frequenzen nicht erheblich.
+
+
+\subsection{200825 Meeting Gerstmayr, Neurauther,Türmer}
+Rene:\\
+Zusammenfassung Ideen Masterarbeit:
+\begin{itemize}
+\item
+Integration eines GPS Moduls:
+\begin{itemize}
+\item
+Auswahl GPS Modul
+\item
+Inbetriebnahme
+\item
+Synchronisation mit IMUs
+\end{itemize}
+
+\item
+Durchführung Experimente:
+
+\begin{itemize}
+\item
+wie lange dauert die Positionsbestimmung
+\item
+Auswirkung Wartezeit
+\item
+Auswirkung Einhausung
+\end{itemize}
+
+\item
+Fusionierung der Messdaten
+\begin{itemize}
+\item
+Vergleich der Endpositon IMU vs GPS bei bekannter Startposition
+\item
+Korrektur der Endposition
+\item
+Literaturrecherche zu bstehenden Modellen
+\item
+Erstellen 2d Modell (Snowball in Ebene)
+\end{itemize}
+\end{itemize}
+
+
+\subsection{200908 Meeting Gerstmayr, Neurauther, Neuhauser, Türmer, Fischer}
+
+Michi:
+\begin{itemize}
+\item
+Recco: Unterstützung zugesagt.
+\item
+Laserscan: 1. Scan durchgeführt. Blickwinkel geprüft.
+\end{itemize}
+
+JT: 
+
+\begin{itemize}
+\item
+Nordkette: ofizielle Zusage, muss noch persönlich Abgesprochen werden.
+\item
+Ortung: am Besten Recco+miniLVS
+\end{itemize}
+
+Rene:
+\begin{itemize}
+\item
+Prototyp gedruckt, IMU+SD, keine Zeitüberschreitung
+\item
+Laborversuche geplant(Translation+Drehungen), bis jetzt Freihand
+\item
+Testwürfel für Labor, kein Temperatursensor etc., Schnittstelle vorhanden,
+\item
+Erste Test Anfang Dezember
+\item
+PCB-Design
+\end{itemize}
+
+GPS:
+\begin{itemize}
+\item
+Testabläufe
+\item
+Modulauswahl
+\item
+Stromverbrauch
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
